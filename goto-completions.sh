@@ -25,11 +25,8 @@ goto() {
 
 _goto_completions()
 {
-  # for testing without invoking the function.
+  # for testing without invoking the goto function.
   local simulated
-  # the root repository to search. need a way to set this across repos, languages,
-  # maybe.
-  local repo_root=${GOTO_REPO_ROOT:-$HOME/github.com}
 
   # let this run interactively for testing
   if [ "$COMP_WORDS" == "" ]; then
@@ -41,26 +38,32 @@ _goto_completions()
     local name=${COMP_WORDS[1]}
   fi
 
-  # how many slashes are in the name? (n)
-  #local len=${#name}; local count=${name//\//}; local count=${#count}; local n=$((len-count));
-
-  local pattern="$repo_root"
-
   # get the parts of the name
   local IFS=$'/'
   local name_parts=($(echo "$name"))
 
+  # how many parts of the repo path did the user supply?
   local n=${#name_parts[@]}
 
+  # the root repository to search. need a way to set this across repos
+  # and maybe languages.
+  local repo_root=${GOTO_REPO_ROOT:-$HOME/github.com}
+  # modify the pattern based on how specific the user was
   if [ $n -eq 1 ]; then
-    local pattern="$pattern/*/$name*"
+    local pattern="$repo_root/*/$name*"
   elif [ $n -eq 2 ]; then
-    local pattern="$pattern/${name_parts[0]}*/${name_parts[1]}*"
+    local pattern="$repo_root/${name_parts[0]}*/${name_parts[1]}*"
   elif [ $n -eq 3 ]; then
+    # not sure what this is for yet.
     local pattern="$name*"
+  elif [ $n -eq 0 ]; then
+    # this is too many options, but it's what the user asked for
+    local pattern="$repo_root/*/*"
   fi
 
-  #echo "pattern: $pattern"
+  if [ -n "$simulated" ]; then
+    echo "compgen -G with $pattern"
+  fi
 
   local IFS=$'\n'
   local sugs=($(compgen -G "$pattern"))
