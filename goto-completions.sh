@@ -85,4 +85,4 @@ _goto_completions()
 
 }
 
-complete -F _goto_completions -D goto
+complete -F _goto_completions goto
