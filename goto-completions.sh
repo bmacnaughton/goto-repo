@@ -48,9 +48,19 @@ _goto_completions()
   # the root repository to search. need a way to set this across repos
   # and maybe languages.
   local repo_root=${GOTO_REPO_ROOT:-$HOME/github.com}
-  # modify the pattern based on how specific the user was
+
+  # modify the pattern based on how specific the user was. if there is only
+  # one item make pattern2 as it might represent the user, not the user's repo.
   if [ $n -eq 1 ]; then
-    local pattern="$repo_root/*/$name*"
+    # if the name ends in slash presume it's a user
+    if [ "${name: -1}" = "/" ]; then
+      local user_only=true
+      local pattern="$repo_root/${name%?}*"
+    else
+      local user_only=false
+      local pattern="$repo_root/*/$name*"
+      local pattern2="$repo_root/${name}*"
+    fi
   elif [ $n -eq 2 ]; then
     local pattern="$repo_root/${name_parts[0]}*/${name_parts[1]}*"
   elif [ $n -eq 3 ]; then
@@ -72,12 +82,22 @@ _goto_completions()
 
   for s in "${sugs[@]}"
   do
-    local IFS=$'/'
-    local sug=($(echo "$s"))
-    local IFS=$''
-    local tail="${sug[-2]}/${sug[-1]}"
-    COMPREPLY+=($tail)
+    if [ "$user_only" = "true" ]; then
+      COMPREPLY+=($s)
+    else
+      local IFS=$'/'
+      local sug=($(echo "$s"))
+      local IFS=$''
+      local tail="${sug[-2]}/${sug[-1]}"
+      COMPREPLY+=($tail)
+    fi
   done
+
+  # if there were no suggestions, check to see if it could be a user
+  if [ "${#sugs[@]}" -eq 0 -a "$pattern2" != "" ]; then
+    local sugs=($(compgen -G "$pattern2"))
+    COMPREPLY+=($sugs)
+  fi
 
   if [ -n "$simulated" ]; then
     echo "pretending to goto: ${COMPREPLY[@]}"
