@@ -96,7 +96,7 @@ _goto_completions()
       COMPREPLY+=("$s")
     else
       IFS="/" read -ra sug <<< "$s"
-      [ -z "$debugging" ] && echo "[$s yields sug" "${sug[@]}" "]"
+      [ -n "$debugging" ] && echo "[$s yields sug" "${sug[@]}" "]"
       local tail="${sug[-2]}/${sug[-1]}"
       # if 3 parts were specified, put the first one back in
       if [ "$n" -eq 3 ]; then
