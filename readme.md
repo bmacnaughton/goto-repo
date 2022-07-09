@@ -10,14 +10,14 @@ my github repositories in a similar structure, e.g.,
 ```bash
 ~/
   github.com/
-  bmacnaughton/
-    goto-repo/
-    testeachversion/
-    ws/
-  mochajs/
-    mocha
-  websockets/
-    ws
+    bmacnaughton/
+      goto-repo/
+      testeachversion/
+      ws/
+    mochajs/
+      mocha
+    websockets/
+      ws
 ```
 
 i wanted a simple way to specify just the target and be able to navigate to
@@ -37,6 +37,9 @@ using bash editing you'd hit alt-b, insert `b/`, ctrl-e to get to the end of
 the line, then hit tab again and you'll get the unique completion
 `bmacnaughton/ws`.
 
+if the argument doesn't match a repo and does match a username in the root,
+then `goto` will go to `$HOME/github.com/username`.
+
 ### installing
 
 if you've got this repo cloned into an environment like shown above then add
@@ -53,9 +56,7 @@ i wanted to implement bash completion and chose this. there are a few things
 i'd like to fix but it works well enough until i have time to fiddle with it
 some more.
 
-- consider putting the logic into the `goto` function
-- if only one arg, and it's not found, try it as username, not repo name.
-
+- nothing on the list right now
 ### bcompare-completions
 
 i use bcompare and just added a simple completer for it. it's got nothing to
