@@ -5,7 +5,7 @@ goto() {
 
   # script to goto a specific repo.
   # v1 - only find with github.com root of node
-  local repo_root=${GOTO_ROOT:-$HOME/github.com}
+  local repo_root=${GOTO_ROOT:-$HOME/github}
 
   if [ -z "$1" ]; then
     echo "goto: nowhere to go"
@@ -48,11 +48,11 @@ _goto_completions()
 
   # how many parts of the repo path did the user supply?
   local n=${#name_parts[@]}
-  [ -n "$debugging" ] && echo "[$n name_parts]"
+  [ -n "$debugging" ] && echo "[$n name_parts: ${name_parts[*]}]"
 
-  # the root repository to search. need a way to set this across repos
-  # and maybe languages.
-  local repo_root=${GOTO_REPO_ROOT:-$HOME/github.com}
+  # script to goto a specific repo.
+  # v1 - only find with github.com root of node
+  local repo_root=${GOTO_ROOT:-$HOME/github}
 
   local pattern
   local pattern2
